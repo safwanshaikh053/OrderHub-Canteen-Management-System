@@ -1,4 +1,4 @@
-![WhatsApp Image 2026-02-01 at 12 40 04 AM](https://github.com/user-attachments/assets/1110dbf4-9389-46ea-8571-33b0fed24a81)🍽️ OrderHub Campus – Canteen Management System
+🍽️ OrderHub Campus – Canteen Management System
 
 OrderHub Campus is a full-stack canteen management system designed to digitize and simplify the food ordering process within a campus environment. The application enables smooth interaction between Customers, Staff, and Admin, ensuring efficient order management, inventory handling, and real-time data flow.
 
