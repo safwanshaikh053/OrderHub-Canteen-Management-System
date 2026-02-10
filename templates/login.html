@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrderHub Campus | Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #06b6d4;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef2ff, #fdf2f8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Inter", sans-serif;
+        }
+
+        /* ================= CARD ================= */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            backdrop-filter: blur(14px);
+            border-radius: 22px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            padding: 36px;
+            position: relative;
+            animation: fadeUp 0.6s ease-in-out;
+        }
+
+        .login-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 6px;
+            width: 100%;
+            border-radius: 22px 22px 0 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ================= HEADER ================= */
+        .brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .brand h3 {
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .brand p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* ================= FORM ================= */
+        .form-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #444;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 12px;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+        }
+
+        /* ================= BUTTON ================= */
+        .btn-login {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 999px;
+            padding: 12px;
+            font-weight: 700;
+            transition: 0.25s;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(79,70,229,0.35);
+        }
+
+        /* ================= ERROR ================= */
+        #errorMsg {
+            font-size: 0.9rem;
+        }
+
+        /* ================= FOOTER LINK ================= */
+        .register-link {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 0.9rem;
+        }
+
+        .register-link a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+
+    <div class="brand">
+        <h3>OrderHub Campus</h3>
+        <p>Welcome back</p>
+    </div>
+
+    <!-- Role -->
+    <div class="mb-3">
+        <label class="form-label">Login As</label>
+        <select id="role" class="form-select">
+            <option value="">Select Role</option>
+            <option value="ADMIN">Admin</option>
+            <option value="STAFF">Staff</option>
+            <option value="CUSTOMER">Customer</option>
+        </select>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" id="email" class="form-control" placeholder="Enter email">
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Enter password">
+    </div>
+
+    <!-- Error -->
+    <div id="errorMsg" class="text-danger mb-2 text-center small"></div>
+
+    <!-- Button -->
+    <button class="btn btn-login w-100" onclick="login()">
+        Login
+    </button>
+
+    <!-- Footer -->
+    <div class="register-link">
+        Don’t have an account?
+        <a th:href="@{/register}"><strong>Register</strong></a>
+    </div>
+
+</div>
+
+<script th:inline="javascript">
+async function login() {
+    const role = document.getElementById("role").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const errorMsg = document.getElementById("errorMsg");
+
+    errorMsg.innerText = "";
+
+    if (!role || !email || !password) {
+        errorMsg.innerText = "All fields are required";
+        return;
+    }
+
+    try {
+        // =========================
+        // AUTH LOGIN (ROLE CHECK)
+        // =========================
+        const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ role, email, password })
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            errorMsg.innerText = err.error || "Login failed";
+            return;
+        }
+
+        const user = await response.json();
+        console.log("Auth login response:", user);
+
+        // =========================
+        // STORE ROLE-BASED IDS
+        // =========================
+        if (role === "STAFF" && user && (user.staffId || user.id)) {
+            localStorage.setItem("staffId", user.staffId || user.id);
+            localStorage.setItem("staffName", user.name || "Staff");
+        }
+
+        if (role === "ADMIN" && user && user.id) {
+            localStorage.setItem("adminId", user.id);
+        }
+
+        // =========================
+        // CUSTOMER EXTRA LOGIN
+        // =========================
+        if (role === "CUSTOMER") {
+            const custRes = await fetch("http://localhost:8081/api/customers/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (!custRes.ok) {
+                errorMsg.innerText = "Customer login failed";
+                return;
+            }
+
+            const data = await custRes.json();
+            console.log("Customer login response:", data);
+
+            // ✅ THIS WAS MISSING EARLIER
+            localStorage.setItem("loggedInUser", JSON.stringify({
+                customerId: data.customerId,
+                name: data.name,
+                email: data.email
+            }));
+
+            console.log(
+                "Stored loggedInUser:",
+                JSON.parse(localStorage.getItem("loggedInUser"))
+            );
+        }
+
+        // =========================
+        // FINAL REDIRECT (ONLY ONCE)
+        // =========================
+        if (role === "ADMIN") {
+            window.location.href = "/admin/dashboard";
+        } else if (role === "STAFF") {
+            window.location.href = "/staff/dashboard";
+        } else if (role === "CUSTOMER") {
+            window.location.href = "/customer/dashboard";
+        }
+
+    } catch (e) {
+        console.error(e);
+        errorMsg.innerText = "Server not reachable";
+    }
+}
+</script>
+
+</body>
+</html>

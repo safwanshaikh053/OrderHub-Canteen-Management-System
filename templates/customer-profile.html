@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile | OrderHub Campus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f8f9fa;
+        }
+        .profile-card {
+            max-width: 520px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-dark bg-dark px-4">
+    <span class="navbar-brand">OrderHub Campus</span>
+    <button class="btn btn-sm btn-outline-light" onclick="logout()">Logout</button>
+</nav>
+
+<!-- ================= PROFILE ================= -->
+<div class="container mt-5">
+    <div class="card profile-card shadow">
+        <div class="card-body p-4">
+
+            <h4 class="text-center mb-3">My Profile</h4>
+
+            <!-- Alerts -->
+            <div id="alertBox"></div>
+
+            <form id="profileForm">
+
+                <!-- Name -->
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+
+                <!-- Email (read-only) -->
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" readonly>
+                </div>
+
+                <!-- Phone -->
+                <div class="mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" id="phone" class="form-control" placeholder="10-digit phone">
+                </div>
+
+                <hr>
+
+                <h6 class="text-muted">Change Password (optional)</h6>
+
+                <!-- New Password -->
+                <div class="mb-3">
+                    <label class="form-label">New Password</label>
+                    <input type="password" id="password" class="form-control">
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-3">
+                    <label class="form-label">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">
+                    Update Profile
+                </button>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+const alertBox = document.getElementById("alertBox");
+
+// ================= LOAD USER =================
+const user = JSON.parse(localStorage.getItem("loggedInUser"));
+const role = localStorage.getItem("role");
+
+if (!user || role !== "CUSTOMER") {
+    window.location.href = "/login";
+}
+
+// Fill form
+document.getElementById("name").value = user.name || "";
+document.getElementById("email").value = user.email || "";
+document.getElementById("phone").value = user.phone || "";
+
+// ================= UPDATE PROFILE =================
+document.getElementById("profileForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    clearAlert();
+
+    const name = document.getElementById("name").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (name.length < 3) {
+        showAlert("Name must be at least 3 characters", "danger");
+        return;
+    }
+
+    if (phone && !/^\d{10}$/.test(phone)) {
+        showAlert("Phone must be exactly 10 digits", "danger");
+        return;
+    }
+
+    if (password) {
+        const passwordRegex =
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+        if (!passwordRegex.test(password)) {
+            showAlert(
+                "Password must contain uppercase, lowercase, number, special character and minimum 8 characters",
+                "danger"
+            );
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            showAlert("Passwords do not match", "danger");
+            return;
+        }
+    }
+
+    const payload = {
+        name,
+        phone,
+        isActive: true
+    };
+
+    if (password) {
+        payload.password = password;
+    }
+
+    try {
+        const response = await fetch(`/api/customers/${user.customerId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.message || "Update failed");
+        }
+
+        const updatedUser = await response.json();
+        localStorage.setItem("loggedInUser", JSON.stringify(updatedUser));
+
+        showAlert("Profile updated successfully ✅", "success");
+
+        document.getElementById("password").value = "";
+        document.getElementById("confirmPassword").value = "";
+
+    } catch (err) {
+        showAlert(err.message, "danger");
+    }
+});
+
+// ================= LOGOUT =================
+function logout() {
+    localStorage.clear();
+    window.location.href = "/login";
+}
+
+// ================= ALERT HELPERS =================
+function showAlert(msg, type) {
+    alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+}
+
+function clearAlert() {
+    alertBox.innerHTML = "";
+}
+</script>
+
+</body>
+</html>

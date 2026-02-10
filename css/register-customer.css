@@ -1,0 +1,127 @@
+/* ===============================
+   Page Background (Sunset Palette)
+================================ */
+body {
+    min-height: 100vh;
+    background: linear-gradient(
+        180deg,
+        #f4a261 0%,
+        #e76f51 35%,
+        #6d2e46 70%,
+        #3a0f2e 100%
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ===============================
+   Card
+================================ */
+.card {
+    border: none;
+    border-radius: 18px;
+    background-color: #f6d2c6; /* light peach from image */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.card-body {
+    padding: 32px 28px;
+}
+
+/* ===============================
+   Heading
+================================ */
+.card h3 {
+    text-align: center;
+    font-weight: 600;
+    color: #3a0f2e; /* deep plum */
+}
+
+.card h3::after {
+    content: "OrderHub Campus • Canteen System";
+    display: block;
+    font-size: 13px;
+    font-style: italic;
+    color: #6d2e46;
+    margin-top: 6px;
+}
+
+/* ===============================
+   Labels
+================================ */
+.form-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #3a0f2e;
+}
+
+/* ===============================
+   Inputs
+================================ */
+.form-control {
+    border-radius: 12px;
+    padding: 10px 14px;
+    border: 1px solid #d89a8c;
+    background-color: #fbe3db;
+    color: #3a0f2e;
+}
+
+.form-control::placeholder {
+    color: #8f5b6c;
+}
+
+.form-control:focus {
+    border-color: #e76f51;
+    box-shadow: 0 0 0 0.15rem rgba(231, 111, 81, 0.35);
+    background-color: #fff;
+}
+
+/* ===============================
+   Register Button
+================================ */
+.btn-primary {
+    background: linear-gradient(135deg, #f4a261, #e76f51);
+    border: none;
+    border-radius: 14px;
+    padding: 10px;
+    font-weight: 500;
+    color: #3a0f2e;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(231, 111, 81, 0.45);
+}
+
+/* ===============================
+   Alerts
+================================ */
+.alert {
+    border-radius: 12px;
+    font-size: 13px;
+}
+
+/* ===============================
+   Link
+================================ */
+.text-center a {
+    color: #6d2e46;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.text-center a:hover {
+    text-decoration: underline;
+}
+
+/* ===============================
+   Mobile
+================================ */
+@media (max-width: 576px) {
+    .card-body {
+        padding: 26px 22px;
+    }
+}

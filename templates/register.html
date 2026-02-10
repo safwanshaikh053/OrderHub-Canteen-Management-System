@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrderHub Campus | Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #06b6d4;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef2ff, #fdf2f8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Inter", sans-serif;
+        }
+
+        /* ================= CARD ================= */
+        .register-card {
+            width: 100%;
+            max-width: 540px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border-radius: 22px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            padding: 36px;
+            position: relative;
+            animation: fadeUp 0.6s ease-in-out;
+        }
+
+        .register-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 6px;
+            width: 100%;
+            border-radius: 22px 22px 0 0;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ================= HEADER ================= */
+        .brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .brand h3 {
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .brand p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* ================= FORM ================= */
+        .form-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #444;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 12px;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+        }
+
+        /* ================= BUTTON ================= */
+        .btn-register {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 999px;
+            padding: 12px;
+            font-weight: 700;
+            transition: 0.25s;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(79,70,229,0.35);
+        }
+
+        /* ================= FOOTER LINK ================= */
+        .login-link {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 0.9rem;
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* ================= ALERT ================= */
+        .alert {
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="register-card">
+
+    <div class="brand">
+        <h3>OrderHub Campus</h3>
+        <p>Create your account</p>
+    </div>
+
+    <!-- Alerts -->
+    <div id="alertBox"></div>
+
+    <!-- Role -->
+    <div class="mb-3">
+        <label class="form-label">Register As</label>
+        <select id="role" class="form-select" onchange="toggleFields()">
+            <option value="">Select Role</option>
+            <option value="ADMIN">Admin</option>
+            <option value="STAFF">Staff</option>
+            <option value="CUSTOMER">Customer</option>
+        </select>
+    </div>
+
+    <!-- Name -->
+    <div class="mb-3">
+        <label class="form-label">Full Name</label>
+        <input type="text" id="name" class="form-control">
+    </div>
+
+    <!-- Staff Role -->
+    <div class="mb-3 d-none" id="staffRoleDiv">
+        <label class="form-label">Staff Role</label>
+        <select id="staffRole" class="form-select">
+            <option value="">Select Role</option>
+            <option value="CHEF">Chef</option>
+            <option value="COUNTER">Counter</option>
+            <option value="MANAGER">Manager</option>
+        </select>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" id="email" class="form-control">
+    </div>
+
+    <!-- Phone -->
+    <div class="mb-3 d-none" id="phoneDiv">
+        <label class="form-label">Phone</label>
+        <input type="text" id="phone" class="form-control" placeholder="10 digit number">
+    </div>
+
+    <!-- Shift -->
+    <div class="mb-3 d-none" id="shiftDiv">
+        <label class="form-label">Shift</label>
+        <input type="text" id="shift" class="form-control">
+    </div>
+
+    <!-- Join Date -->
+    <div class="mb-3 d-none" id="joinDateDiv">
+        <label class="form-label">Join Date</label>
+        <input type="date" id="joinDate" class="form-control">
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" id="password" class="form-control">
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="mb-3">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" id="confirmPassword" class="form-control">
+    </div>
+
+    <button class="btn btn-register w-100" onclick="register()">
+        Register
+    </button>
+
+    <div class="login-link">
+        Already have an account?
+        <a href="/login"><strong>Login</strong></a>
+    </div>
+
+</div>
+
+<script>
+function showAlert(msg, type) {
+    document.getElementById("alertBox").innerHTML =
+        `<div class="alert alert-${type}">${msg}</div>`;
+}
+
+function toggleFields() {
+    const role = document.getElementById("role").value;
+
+    document.getElementById("phoneDiv").classList.toggle("d-none", role === "ADMIN");
+    document.getElementById("staffRoleDiv").classList.toggle("d-none", role !== "STAFF");
+    document.getElementById("shiftDiv").classList.toggle("d-none", role !== "STAFF");
+    document.getElementById("joinDateDiv").classList.toggle("d-none", role !== "STAFF");
+}
+
+async function register() {
+
+    const role = document.getElementById("role").value;
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const staffRole = document.getElementById("staffRole").value;
+    const shift = document.getElementById("shift").value.trim();
+    const joinDate = document.getElementById("joinDate").value || null;
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+    if (!role || !name || !email || !password || !confirmPassword) {
+        showAlert("All required fields must be filled", "danger");
+        return;
+    }
+
+    if (!passwordRegex.test(password)) {
+        showAlert("Password must contain uppercase, lowercase, number, special character & min 8 chars", "danger");
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        showAlert("Passwords do not match", "danger");
+        return;
+    }
+
+    let url = "";
+    let payload = {};
+
+    if (role === "ADMIN") {
+        url = "/api/admin";
+        payload = { name, email, password, isActive: true };
+    }
+
+    if (role === "CUSTOMER") {
+        if (!/^\d{10}$/.test(phone)) {
+            showAlert("Phone number must be exactly 10 digits", "danger");
+            return;
+        }
+        url = "/api/customers";
+        payload = { name, email, phone, password, isActive: true };
+    }
+
+    if (role === "STAFF") {
+        if (!staffRole) {
+            showAlert("Please select staff role", "danger");
+            return;
+        }
+        url = "/api/admin/staff";
+        payload = {
+            name,
+            role: staffRole,
+            email,
+            phone,
+            shift,
+            joinDate,
+            password,
+            isActive: true
+        };
+    }
+
+    try {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+            const err = await res.json();
+            showAlert(err.message || err.error || "Registration failed", "danger");
+            return;
+        }
+
+        showAlert("Registration successful ✅ Redirecting to login...", "success");
+        setTimeout(() => window.location.href = "/login", 1500);
+
+    } catch {
+        showAlert("Server not reachable", "danger");
+    }
+}
+</script>
+
+</body>
+</html>

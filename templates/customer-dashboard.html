@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OrderHub Campus | Customer Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary:#4f46e5;
+            --secondary:#06b6d4;
+            --bg:#f5f7ff;
+            --card-bg:rgba(255,255,255,0.95);
+            --dark-grad:linear-gradient(120deg,#141e30,#243b55);
+        }
+
+        body {
+            margin:0;
+            background:var(--bg);
+            font-family:"Inter",sans-serif;
+        }
+
+        .page-section {
+            display:none;
+            min-height:100vh;
+            padding-top:25px;
+        }
+
+        .active-section {
+            display:block;
+        }
+
+        /* ================= NAVBAR ================= */
+        .navbar {
+            background:white;
+            box-shadow:0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .brand-circle {
+            width:42px;
+            height:42px;
+            border-radius:50%;
+            background:linear-gradient(135deg,var(--primary),var(--secondary));
+            color:white;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:800;
+            margin-right:10px;
+        }
+
+        .nav-link {
+            cursor:pointer;
+            font-weight:600;
+            color:#333 !important;
+        }
+
+        .nav-link:hover {
+            color:var(--primary)!important;
+        }
+
+        .cart {
+            position:relative;
+        }
+
+        .cart span {
+            position:absolute;
+            top:-6px;
+            right:-8px;
+            background:#dc3545;
+            color:white;
+            font-size:11px;
+            padding:2px 6px;
+            border-radius:50%;
+        }
+
+        /* ================= MENU ================= */
+        .table-container {
+            background:var(--card-bg);
+            padding:25px;
+            border-radius:18px;
+            box-shadow:0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .table thead {
+            background:#f8f9fa;
+            border-bottom:3px solid var(--primary);
+        }
+
+        .table th {
+            font-weight:700;
+            font-size:0.85rem;
+            text-transform:uppercase;
+            letter-spacing:0.6px;
+        }
+
+        .add-btn {
+            background:linear-gradient(135deg,var(--primary),var(--secondary));
+            color:white;
+            border:none;
+            padding:7px 20px;
+            border-radius:999px;
+            font-weight:600;
+            transition:0.25s;
+        }
+
+        .add-btn:hover {
+            transform:translateY(-2px);
+            box-shadow:0 10px 25px rgba(79,70,229,0.4);
+        }
+
+        /* ================= DARK SECTIONS ================= */
+        #place-order-sec,
+        #my-orders-sec,
+        #profile-sec {
+            background:var(--dark-grad);
+            color:white;
+            padding-bottom:60px;
+        }
+
+        .order-box,
+        .profile-card {
+            background:rgba(255,255,255,0.15);
+            padding:25px;
+            border-radius:18px;
+            margin-bottom:20px;
+            border:1px solid rgba(255,255,255,0.12);
+            box-shadow:0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        /* ================= RECEIPT ================= */
+        .receipt-card {
+            border:none;
+            background:white;
+            color:#333;
+            border-radius:18px;
+            padding:30px;
+            box-shadow:0 20px 45px rgba(0,0,0,0.25);
+        }
+
+        /* ================= FORM ================= */
+        .form-control {
+            border-radius:12px;
+        }
+
+        .btn-primary {
+            background:linear-gradient(135deg,var(--primary),var(--secondary));
+            border:none;
+            border-radius:999px;
+            font-weight:600;
+        }
+
+        .btn-primary:hover {
+            transform:translateY(-2px);
+            box-shadow:0 10px 25px rgba(79,70,229,0.4);
+        }
+
+        .btn-success {
+            border-radius:999px;
+            font-weight:600;
+        }
+    </style>
+</head>
+<body>
+
+<div id="main-app">
+
+    <!-- NAVBAR -->
+    <nav class="navbar sticky-top px-4 d-flex align-items-center">
+        <div class="d-flex align-items-center">
+<!--             <div class="brand-circle">OH</div> -->
+            <span class="fw-bold fs-5 text-dark">🍽 OrderHub Campus</span>
+        </div>
+
+        <div class="ms-auto d-flex align-items-center gap-4">
+            <span class="nav-link" onclick="showSection('menu-sec')">Menu</span>
+            <span class="nav-link" onclick="showSection('my-orders-sec')">My Orders</span>
+            <span class="nav-link" onclick="showSection('profile-sec')">Profile</span>
+            <div class="cart nav-link" onclick="showSection('place-order-sec')">
+                <i class="fa-solid fa-cart-shopping fs-5"></i>
+                <span id="cartCount">0</span>
+            </div>
+            <button class="btn btn-outline-danger btn-sm" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <!-- MENU -->
+    <section id="menu-sec" class="page-section active-section">
+        <div class="container">
+            <h3 class="mb-4 fw-bold text-dark">Menu List</h3>
+            <div class="table-container">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th style="width:50%">Item Name</th>
+                            <th style="width:25%">Price</th>
+                            <th style="width:25%" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="menu-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- PLACE ORDER -->
+    <section id="place-order-sec" class="page-section">
+        <div class="container">
+            <h3 class="mb-4">🛒 Confirm Your Order</h3>
+            <div id="cartItems" class="mb-3"></div>
+
+            <div class="order-box">
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="fs-5">Total Amount:</span>
+                    <span class="fs-4 fw-bold">₹ <span id="totalDisplay">0</span></span>
+                </div>
+                <button class="btn btn-success btn-lg w-100" onclick="confirmOrder()">
+                    Confirm Order & Generate Receipt
+                </button>
+            </div>
+
+            <div class="receipt-card d-none mt-4" id="receipt">
+                <div class="text-center mb-4">
+                    <h4 class="fw-bold mb-0">ORDERHUB CAMPUS</h4>
+                    <p class="text-muted small">Official Digital Receipt</p>
+                    <div id="rDate" class="small text-muted"></div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="small text-muted">Customer Details:</div>
+                    <div class="fw-bold" id="rName"></div>
+                    <div class="small" id="rEmail"></div>
+                </div>
+
+                <table class="table table-sm border-top">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Item</th>
+                            <th class="text-center">Qty</th>
+                            <th class="text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rOrders"></tbody>
+                </table>
+
+                <div class="d-flex justify-content-between border-top pt-3 mt-2">
+                    <span class="fw-bold">Grand Total:</span>
+                    <span class="fw-bold text-primary fs-5">
+                        ₹ <span id="rTotal"></span>
+                    </span>
+                </div>
+
+                <div class="text-center mt-4 pt-3 border-top">
+                    <p class="mb-0 small text-muted">Thank you for your order!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MY ORDERS -->
+    <section id="my-orders-sec" class="page-section">
+        <div class="container">
+            <h3>🧾 My Order History</h3>
+            <div id="ordersContainer"></div>
+        </div>
+    </section>
+
+    <!-- PROFILE -->
+    <section id="profile-sec" class="page-section">
+        <div class="container">
+            <div class="profile-card">
+                <h4>Customer Profile</h4>
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" id="p-name" class="form-control" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="p-email" class="form-control" disabled>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <textarea id="p-address" class="form-control"></textarea>
+                </div>
+                <button class="btn btn-primary w-100" onclick="alert('Profile Saved')">
+                    Save Details
+                </button>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+let menuItems = [];
+
+let currentUser = JSON.parse(localStorage.getItem("loggedInUser")) || {
+    email: "user@example.com",
+    name: "User"
+};
+
+/* ================= MENU ================= */
+function renderMenu() {
+    fetch("http://localhost:8081/api/menu/available")
+        .then(res => res.json())
+        .then(data => {
+            menuItems = data;
+            const tbody = document.getElementById("menu-table-body");
+            tbody.innerHTML = "";
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">
+                            No items available
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            data.forEach((item, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="fw-semibold">${item.itemName}</td>
+                        <td>₹${item.price}</td>
+                        <td class="text-center">
+                            <button class="add-btn" onclick="addToCart(${idx})">Add</button>
+                        </td>
+                    </tr>`;
+            });
+        });
+}
+
+function addToCart(idx) {
+    const email = currentUser.email;
+    let cart = JSON.parse(localStorage.getItem("cart_" + email)) || [];
+
+    const item = menuItems[idx];
+    const found = cart.find(c => c.menuItemId === item.menuItemId);
+
+    if (found) {
+        found.qty++;
+    } else {
+        cart.push({
+            menuItemId: item.menuItemId,
+            name: item.itemName,
+            price: item.price,
+            qty: 1
+        });
+    }
+
+    localStorage.setItem("cart_" + email, JSON.stringify(cart));
+    updateCartBadge();
+    document.getElementById("receipt").classList.add("d-none");
+}
+
+/* ================= CART ================= */
+function updateCartBadge() {
+    const email = currentUser.email;
+    const cart = JSON.parse(localStorage.getItem("cart_" + email)) || [];
+    document.getElementById("cartCount").innerText =
+        cart.reduce((a, b) => a + b.qty, 0);
+}
+
+function renderCart() {
+    const email = currentUser.email;
+    const cart = JSON.parse(localStorage.getItem("cart_" + email)) || [];
+    const div = document.getElementById("cartItems");
+
+    let total = 0;
+    div.innerHTML = "";
+
+    if (cart.length === 0) {
+        div.innerHTML = "<p class='text-center py-4'>Your cart is empty.</p>";
+        document.getElementById("totalDisplay").innerText = "0";
+        return;
+    }
+
+    cart.forEach(i => {
+        const subtotal = i.price * i.qty;
+        total += subtotal;
+
+        div.innerHTML += `
+            <div class="d-flex justify-content-between align-items-center bg-white text-dark p-3 rounded mb-2 shadow-sm">
+                <span><strong>${i.name}</strong> <small class="text-muted">x${i.qty}</small></span>
+                <span class="fw-bold">₹${subtotal}</span>
+            </div>`;
+    });
+
+    // ✅ TOTAL CALCULATED HERE
+    document.getElementById("totalDisplay").innerText = total;
+}
+
+function renderOrders() {
+    const user = JSON.parse(localStorage.getItem("loggedInUser"));
+
+    if (!user || !user.customerId) {
+        document.getElementById("ordersContainer").innerHTML =
+            "<p class='text-center'>Customer not logged in</p>";
+        return;
+    }
+
+    fetch(`http://localhost:8081/api/customer/orders/customer/${user.customerId}`)
+        .then(res => res.json())
+        .then(orders => {
+
+            const container = document.getElementById("ordersContainer");
+            container.innerHTML = "";
+
+            if (!orders || orders.length === 0) {
+                container.innerHTML = "<p>No orders found.</p>";
+                return;
+            }
+
+            orders.forEach(order => {
+
+                const itemsHtml = (order.orderItems || []).map(oi =>
+                    `<li>${oi.menuItem.itemName} x${oi.quantity}</li>`
+                ).join("");
+
+                const statusBadge =
+                    order.status === "READY"
+                        ? `<span class="badge bg-success">READY</span>`
+                        : `<span class="badge bg-warning text-dark">${order.status}</span>`;
+
+                container.innerHTML += `
+                    <div class="order-box mb-3">
+                        <strong>Order ID: ${order.orderId}</strong><br>
+                        <small>${new Date(order.orderDate).toLocaleString()}</small>
+
+                        <ul class="mt-2">${itemsHtml}</ul>
+
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <span>Total: ₹${order.totalAmount}</span>
+                            ${statusBadge}
+                        </div>
+                    </div>
+                `;
+            });
+        })
+        .catch(err => {
+            console.error("Failed to load customer orders", err);
+        });
+}
+
+/* ================= CONFIRM ORDER ================= */
+function confirmOrder() {
+    const email = currentUser.email;
+    const cart = JSON.parse(localStorage.getItem("cart_" + email)) || [];
+
+    if (!cart.length) {
+        alert("Please add items to cart first!");
+        return;
+    }
+
+    // ===== RECEIPT UI =====
+    document.getElementById("rName").innerText = currentUser.name;
+    document.getElementById("rEmail").innerText = currentUser.email;
+    document.getElementById("rDate").innerText = new Date().toLocaleString();
+
+    const rBody = document.getElementById("rOrders");
+    rBody.innerHTML = "";
+
+    cart.forEach(i => {
+        rBody.innerHTML += `
+            <tr>
+                <td>${i.name}</td>
+                <td class="text-center">${i.qty}</td>
+                <td class="text-end">₹${i.price * i.qty}</td>
+            </tr>`;
+    });
+
+    // ✅ GRAND TOTAL
+    document.getElementById("rTotal").innerText =
+        document.getElementById("totalDisplay").innerText;
+
+    document.getElementById("receipt").classList.remove("d-none");
+
+    // ===== SEND ORDER TO BACKEND =====
+    fetch(`http://localhost:8081/api/customer/orders/${currentUser.customerId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            specialInstructions: "",
+            items: cart.map(i => ({
+                menuItemId: i.menuItemId,
+                quantity: i.qty
+            }))
+        })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Order failed");
+        return res.json();
+    })
+    .then(order => {
+        console.log("Order saved:", order);
+
+        localStorage.removeItem("cart_" + email);
+        updateCartBadge();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Order could not be placed");
+    });
+}
+
+/* ================= NAV ================= */
+function showSection(id) {
+    document.querySelectorAll('.page-section').forEach(s => s.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+
+    if (id === 'place-order-sec') renderCart();
+    if (id === 'my-orders-sec') renderOrders();
+    if (id === 'profile-sec') {
+        document.getElementById("p-name").value = currentUser.name;
+        document.getElementById("p-email").value = currentUser.email;
+    }
+}
+
+function logout() {
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "/login";
+}
+
+/* ================= INIT ================= */
+renderMenu();
+updateCartBadge();
+renderOrders();
+</script>
+
+</body>
+</html>

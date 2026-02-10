@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restock Requests - OrderHub Campus</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/staff-restock.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <img th:src="@{/images/logo.png}" class="nav-logo" th:onclick="|window.location.href='@{/staff/dashboard}'|">
+                <span class="brand-name">OrderHub Campus</span>
+            </div>
+            <div class="nav-actions d-flex align-items-center gap-3">
+                <button class="btn btn-primary rounded-pill" id="navStaffName">Hi, Staff</button>
+                <button class="menu-btn btn btn-outline-secondary" onclick="toggleMenu()">⋮</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-clipboard-list"></i> My Restock Requests</h2>
+            <button class="btn btn-primary" onclick="showRequestModal()">+ New Request</button>
+        </div>
+        <div class="requests-container mt-4" id="requestsContainer"></div>
+    </div>
+
+    <div class="modal fade" id="requestModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <form id="requestForm">
+                        <label>Item Name</label>
+                        <select id="itemSelect" class="form-select mb-3">
+                            <option value="Rice">Rice</option>
+                            <option value="Milk">Milk</option>
+                            <option value="Oil">Oil</option>
+                        </select>
+                        <label>Quantity (kg/L)</label>
+                        <input type="number" id="itemQuantity" class="form-control mb-3" required>
+                        <label>Urgency</label>
+                        <select id="urgencySelect" class="form-select mb-3">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                        <button type="button" class="btn btn-primary w-100" onclick="submitRequest()">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:inline="javascript">
+        /* --- Restock Logic --- */
+        function checkStaffAuth() {
+            const data = localStorage.getItem('staffData');
+            if (!data) { window.location.href = '/login'; return null; }
+            return JSON.parse(data);
+        }
+
+        function loadMyRequests() {
+            const staff = checkStaffAuth();
+            const all = JSON.parse(localStorage.getItem('restockRequests') || '[]');
+            const myRequests = all.filter(r => r.staff === staff.name);
+            const container = document.getElementById('requestsContainer');
+            container.innerHTML = myRequests.length ? '' : 'No requests yet.';
+
+            myRequests.forEach(req => {
+                container.innerHTML += `
+                    <div class="card p-3 mb-2 shadow-sm border-left-gold">
+                        <div class="d-flex justify-content-between">
+                            <strong>${req.id}</strong> <small>${req.date}</small>
+                        </div>
+                        <div>${req.item}</div>
+                        <span class="badge bg-warning text-dark mt-2">${req.status}</span>
+                    </div>`;
+            });
+        }
+
+        function showRequestModal() {
+            new bootstrap.Modal(document.getElementById('requestModal')).show();
+        }
+
+        function submitRequest() {
+            const staff = checkStaffAuth();
+            const all = JSON.parse(localStorage.getItem('restockRequests') || '[]');
+            const newReq = {
+                id: 'R' + (all.length + 1),
+                item: document.getElementById('itemSelect').value + ' (' + document.getElementById('itemQuantity').value + ')',
+                staff: staff.name,
+                date: new Date().toLocaleDateString(),
+                status: 'pending'
+            };
+            all.push(newReq);
+            localStorage.setItem('restockRequests', JSON.stringify(all));
+            location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', loadMyRequests);
+    </script>
+</body>
+</html>

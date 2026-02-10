@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Profile - OrderHub Campus</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 50px auto;
+        }
+        
+        .profile-card {
+            background: white; /* Fallback if var not defined */
+            background: var(--bg-white, #ffffff);
+            border: 3px solid var(--border-color, #e0e0e0);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 8px 20px var(--shadow, rgba(0,0,0,0.1));
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid var(--accent-gold, #b8860b);
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-gold, #b8860b), #d4af37);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(184, 134, 11, 0.3);
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-brown, #3e2723);
+            margin-bottom: 5px;
+        }
+        
+        .profile-role {
+            font-size: 1.2rem;
+            color: var(--accent-gold, #b8860b);
+            font-weight: 600;
+        }
+        
+        .profile-info {
+            display: grid;
+            gap: 25px;
+        }
+        
+        .info-row {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: rgba(184, 134, 11, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-gold, #b8860b);
+        }
+        
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent-gold, #b8860b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3rem;
+            margin-right: 20px;
+        }
+        
+        .info-content {
+            flex: 1;
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            color: rgba(62, 39, 35, 0.6);
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 1.1rem;
+            color: var(--text-brown, #3e2723);
+            font-weight: 700;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .action-buttons .btn {
+            padding: 12px 30px;
+            font-weight: 600;
+            border-radius: 25px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <img th:src="@{/images/logo.png}" alt="OrderHub Logo" class="nav-logo" th:onclick="|window.location.href='@{/staff/dashboard}'|">
+                <span class="brand-name">OrderHub Campus</span>
+            </div>
+            <input type="text" class="search-input rounded-pill px-4" placeholder="Search...">
+            <div class="nav-actions d-flex align-items-center gap-3">
+                <button class="btn btn-primary rounded-pill">Hi, Staff</button>
+                <button class="menu-btn btn btn-outline-secondary" onclick="toggleMenu()">⋮</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="side-menu" id="sideMenu">
+        <div class="menu-header">Staff Menu</div>
+        <a th:href="@{/staff/profile}"><i class="fas fa-user"></i><span>My Profile</span></a>
+        <a th:href="@{/staff/dashboard}"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        <a href="#"><i class="fas fa-cog"></i><span>Settings</span></a>
+        <a href="#"><i class="fas fa-info-circle"></i><span>About Us</span></a>
+        <a href="#"><i class="fas fa-shield-alt"></i><span>Privacy Policy</span></a>
+        <a href="#"><i class="fas fa-question-circle"></i><span>Help Us</span></a>
+        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </div>
+
+    <div class="profile-container">
+        <div class="profile-card shadow-lg">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-name" id="profileName">Staff Member</div>
+                <div class="profile-role" id="profileRole">Kitchen Staff</div>
+            </div>
+            
+            <div class="profile-info">
+                <div class="info-row">
+                    <div class="info-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Employee ID</div>
+                        <div class="info-value" id="profileId">EMP0001</div>
+                    </div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Email Address</div>
+                        <div class="info-value" id="profileEmail">staff@orderhub.com</div>
+                    </div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Shift</div>
+                        <div class="info-value" id="profileShift">Morning Shift</div>
+                    </div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="info-content">
+                        <div class="info-label">Department</div>
+                        <div class="info-value" id="profileDept">Kitchen Operations</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary" th:onclick="|window.location.href='@{/staff/dashboard}'|">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </button>
+                <button class="btn btn-primary" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-text">© 2026 OrderHub Campus. All rights reserved.</div>
+        <div class="footer-links">
+            <a href="#">Terms of Service</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Contact Us</a>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/staff-common.js}"></script>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // checkStaffAuth is defined in staff-common.js
+            if (typeof checkStaffAuth === "function") {
+                const staffData = checkStaffAuth();
+                if (staffData) {
+                    document.getElementById('profileName').textContent = staffData.name;
+                    document.getElementById('profileId').textContent = staffData.id || staffData.empId;
+                    document.getElementById('profileEmail').textContent = staffData.email;
+                    document.getElementById('profileRole').textContent = formatRole(staffData.role);
+                    document.getElementById('profileShift').textContent = staffData.shift || 'Morning Shift';
+                    document.getElementById('profileDept').textContent = getDepartment(staffData.role);
+                }
+            }
+        });
+
+        function formatRole(role) {
+            if (!role) return 'Staff';
+            const roleMap = {
+                'STAFF': 'Kitchen Staff',
+                'kitchen': 'Kitchen Staff',
+                'counter': 'Counter Staff',
+                'delivery': 'Delivery Staff',
+                'manager': 'Manager'
+            };
+            return roleMap[role.toUpperCase()] || role;
+        }
+
+        function getDepartment(role) {
+            if (!role) return 'Operations';
+            const deptMap = {
+                'STAFF': 'Kitchen Operations',
+                'kitchen': 'Kitchen Operations',
+                'counter': 'Customer Service',
+                'delivery': 'Logistics & Delivery',
+                'manager': 'Management'
+            };
+            return deptMap[role.toUpperCase()] || 'Operations';
+        }
+    </script>
+</body>
+</html>

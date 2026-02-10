@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>OrderHub Campus</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --secondary: #06b6d4;
+      --bg: #f5f7ff;
+      --card-bg: rgba(255, 255, 255, 0.85);
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #eef2ff, #fdf2f8);
+      font-family: "Inter", sans-serif;
+    }
+
+    /* ================= NAVBAR ================= */
+    .navbar {
+      background: transparent;
+    }
+
+    .navbar-brand {
+      font-weight: 800;
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+
+    .nav-btn {
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-weight: 600;
+      transition: 0.25s;
+    }
+
+    .btn-login {
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      background: transparent;
+    }
+
+    .btn-login:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-register {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+    }
+
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(79,70,229,0.4);
+    }
+
+    /* ================= MAIN LAYOUT ================= */
+    .hero-wrapper {
+      min-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-left h1 span {
+      color: var(--primary);
+    }
+
+    .hero-left p {
+      font-size: 1.05rem;
+      color: #555;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .stat-box h4 {
+      color: var(--primary);
+      margin-bottom: 0;
+    }
+
+    .stat-box small {
+      color: #666;
+    }
+
+    /* ================= RIGHT CARD ================= */
+    .glass-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(15px);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+    }
+
+    .glass-card h5 {
+      font-weight: 700;
+    }
+
+    .feature {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .feature i {
+      font-size: 22px;
+      color: white;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ================= CTA BUTTONS ================= */
+    .hero-actions {
+      margin-top: 35px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .hero-actions .btn {
+      border-radius: 999px;
+      padding: 12px 26px;
+      font-weight: 600;
+    }
+
+    /* ================= RESPONSIVE ================= */
+    @media (max-width: 768px) {
+      .hero-wrapper {
+        text-align: center;
+      }
+
+      .hero-stats {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar py-4">
+  <div class="container d-flex justify-content-between align-items-center">
+    <div class="navbar-brand">OrderHub Campus</div>
+
+    <div class="d-flex gap-3">
+      <a href="/login" class="btn nav-btn btn-login">Login</a>
+      <a href="/register" class="btn nav-btn btn-register">Register</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section class="container hero-wrapper">
+  <div class="row align-items-center w-100 gy-5">
+
+    <!-- LEFT -->
+    <div class="col-lg-6 hero-left">
+      <h1 class="fw-bold mb-3">
+        Smart Canteen Ordering for <span>Your Campus</span>
+      </h1>
+
+      <p class="mb-4">
+        Skip queues, order faster, and enjoy fresh food right on campus.
+        Designed for students, staff, and faculty.
+      </p>
+
+      <div class="hero-actions">
+        <a href="/register" class="btn btn-register">
+          Get Started <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+<!--         <a href="/login" class="btn btn-login"> -->
+<!--           I already have an account -->
+<!--         </a> -->
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-box">
+          <h4>⚡ Fast</h4>
+          <small>Quick ordering</small>
+        </div>
+        <div class="stat-box">
+          <h4>🍔 Fresh</h4>
+          <small>Daily prepared</small>
+        </div>
+        <div class="stat-box">
+          <h4>🎓 Campus</h4>
+          <small>Made for colleges</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="col-lg-6">
+      <div class="glass-card">
+        <h5>Why students love OrderHub</h5>
+
+        <div class="feature">
+          <i class="bi bi-cart"></i>
+          <div>
+            <strong>Easy Ordering</strong>
+            <p class="mb-0 small text-muted">Order in seconds from your phone</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <i class="bi bi-clock"></i>
+          <div>
+            <strong>Live Status</strong>
+            <p class="mb-0 small text-muted">Know exactly when food is ready</p>
+          </div>
+        </div>
+
+        <div class="feature">
+          <i class="bi bi-egg-fried"></i>
+          <div>
+            <strong>Fresh Meals</strong>
+            <p class="mb-0 small text-muted">Prepared daily by campus canteen</p>
+          </div>
+        </div>
+
+        <div class="mt-4 text-center">
+          <a href="/register" class="btn btn-register w-100">
+            Create Free Account
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

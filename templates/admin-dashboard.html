@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+   
+    <title>OrderHub Campus - Admin</title>
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        
+        :root {
+            --primary: #4f46e5;      
+            --secondary: #06b6d4;    
+            --bg: #f5f7ff;           
+            --card-bg: rgba(255,255,255,0.9); 
+        }
+
+       
+        body {
+            background: var(--bg);        
+            font-family: "Inter", sans-serif;
+        }
+
+        
+        .navbar {
+           
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .navbar-brand {
+            font-weight: 800;  
+            font-size: 1.2rem;
+        }
+
+        
+        .page-container {
+            padding: 30px;
+        }
+
+       
+        .stat-card {
+            background: var(--card-bg);    
+            backdrop-filter: blur(12px);   
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: 0.3s;             
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);  
+        }
+
+        .stat-card h6 {
+            color: #666;
+            font-weight: 600;
+        }
+
+        .stat-card h2 {
+            font-weight: 800;
+            margin-top: 8px;
+            color: var(--primary);        
+        }
+
+       
+        .section-title {
+            font-weight: 800;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        
+        .table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden; 
+        }
+
+        .table thead {
+            
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .table th {
+            font-weight: 600;
+            border: none;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+      
+        .form-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .form-card h6 {
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .form-control {
+            border-radius: 12px; 
+        }
+
+       
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 10px 25px rgba(79,70,229,0.4);
+            transform: translateY(-2px);
+        }
+
+       
+        .btn-success,
+        .btn-danger,
+        .btn-secondary {
+            border-radius: 999px;
+        }
+
+       
+        .restock-table {
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+
+
+<nav class="navbar navbar-dark px-4">
+  
+    <span class="navbar-brand">🍽 OrderHub Campus - Admin</span>
+
+   
+    <div class="text-light">
+        Welcome, Admin
+        <a href="/login" class="btn btn-sm btn-outline-light ms-3">Logout</a>
+    </div>
+</nav>
+
+<div class="page-container">
+
+    
+    <div class="row g-4 mb-4">
+
+        <!-- Total Orders -->
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h6>Total Orders</h6>
+                <h2 id="totalOrders">0</h2>
+            </div>
+        </div>
+
+        <!-- Pending Orders -->
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h6>Pending Orders</h6>
+                <h2 id="pendingOrders">0</h2>
+            </div>
+        </div>
+
+        <!-- Total Menu Items -->
+        <div class="col-md-4">
+            <div class="stat-card">
+                <h6>Menu Items</h6>
+                <h2 id="menuCount">0</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!--MENU MANAGEMENT SECTION-->
+    <h4 class="section-title">Menu Management</h4>
+
+    <div class="row mb-5">
+
+        <!-- Menu Items Table -->
+        <div class="col-md-8">
+            <table class="table table-striped shadow-sm">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Availability</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <!-- Menu items dynamically inserted here -->
+                <tbody id="menuTable"></tbody>
+            </table>
+        </div>
+
+        <!-- Add Menu Item Form -->
+        <div class="col-md-4">
+            <div class="form-card">
+                <h6>Add Menu Item</h6>
+
+                
+                <input id="itemName" class="form-control mb-2" placeholder="Item Name">
+
+                
+                <select id="categorySelect" class="form-control mb-2">
+                    <option value="">Select Category</option>
+                </select>
+
+               
+                <input id="price" type="number" class="form-control mb-3" placeholder="Price">
+
+               
+                <button class="btn btn-primary w-100" onclick="addMenuItem()">
+                    Add Item
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!--  RESTOCK REQUESTS SECTION -->
+    <h4 class="section-title">Restock Requests</h4>
+
+    <table class="table table-bordered table-hover restock-table shadow-sm">
+        <thead>
+            <tr>
+                <th>Staff ID</th>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Note</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <!-- Restock requests loaded  -->
+        <tbody id="restockTable">
+            <tr>
+                <td colspan="6" class="text-center">Loading...</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+
+<script>
+/* Load all required data once the page is ready */
+document.addEventListener("DOMContentLoaded", () => {
+    loadDashboardStats();
+    loadMenuItems();
+    loadCategories();
+    loadRestockRequests();
+});
+
+/* ================= DASHBOARD STATS =================*/
+   
+async function loadDashboardStats() {
+    try {
+        const res = await fetch("/api/admin/dashboard/stats");
+        if (!res.ok) return;
+
+        const data = await res.json();
+        document.getElementById("totalOrders").innerText = data.totalOrders;
+        document.getElementById("pendingOrders").innerText = data.pendingOrders;
+        document.getElementById("menuCount").innerText = data.menuItems;
+    } catch (e) {
+        console.error("Stats not available yet");
+    }
+}
+
+/* MENU ITEMS  */
+async function loadMenuItems() {
+    const res = await fetch("/api/menu");
+    const items = await res.json();
+
+    document.getElementById("menuCount").innerText = items.length;
+
+    const table = document.getElementById("menuTable");
+    table.innerHTML = "";
+
+    items.forEach(item => {
+        table.innerHTML += `
+            <tr>
+                <td>${item.menuItemId}</td>
+                <td>${item.itemName}</td>
+                <td>${item.category?.categoryName || "-"}</td>
+                <td>₹${item.price}</td>
+                <td>
+                    <button class="btn btn-sm ${item.availability ? 'btn-success' : 'btn-secondary'}"
+                        onclick="toggleAvailability(${item.menuItemId})">
+                        ${item.availability ? 'Available' : 'Unavailable'}
+                    </button>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-danger"
+                        onclick="deleteMenuItem(${item.menuItemId})">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+/*  */
+async function addMenuItem() {
+    const name = itemName.value;
+    const categoryId = categorySelect.value;
+    const price = document.getElementById("price").value;
+
+    if (!name || !categoryId || !price) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    await fetch("/api/admin/menu-items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            itemName: name,
+            price: Number(price),
+            categoryId: Number(categoryId),
+            adminId: 2,
+            availability: true,
+            isVeg: true
+        })
+    });
+
+    itemName.value = "";
+    price.value = "";
+    categorySelect.value = "";
+
+    loadMenuItems();
+}
+
+/* Deletes a menu item */
+async function deleteMenuItem(id) {
+    if (!confirm("Delete this item?")) return;
+    await fetch(`/api/menu/${id}`, { method: "DELETE" });
+    loadMenuItems();
+}
+
+/* Toggles availability status of menu item */
+async function toggleAvailability(id) {
+    await fetch(`/api/menu/${id}`, { method: "PATCH" });
+    loadMenuItems();
+}
+
+/* ================= CATEGORIES =================
+   Loads category dropdown */
+async function loadCategories() {
+    const res = await fetch("/api/admin/categories");
+    const categories = await res.json();
+
+    categorySelect.innerHTML = `<option value="">Select Category</option>`;
+    categories.forEach(c => {
+        categorySelect.innerHTML += `
+            <option value="${c.categoryId}">
+                ${c.categoryName}
+            </option>
+        `;
+    });
+}
+
+/* ================= RESTOCK REQUESTS =================
+   Loads pending restock requests */
+async function loadRestockRequests() {
+    const res = await fetch("/api/admin/restock-requests/pending");
+    const requests = await res.json();
+
+    const table = document.getElementById("restockTable");
+    table.innerHTML = "";
+
+    if (requests.length === 0) {
+        table.innerHTML = `
+            <tr>
+                <td colspan="6" class="text-center text-muted">
+                    No pending restock requests
+                </td>
+            </tr>`;
+        return;
+    }
+
+    requests.forEach(r => {
+        table.innerHTML += `
+            <tr>
+                <td>${r.staffId}</td>
+                <td>${r.itemName}</td>
+                <td>${r.requestedQuantity}</td>
+                <td>${r.note ?? "-"}</td>
+                <td>
+                    <button class="btn btn-success btn-sm"
+                        onclick="approveRestock(${r.requestId})">
+                        Approve
+                    </button>
+                    <button class="btn btn-danger btn-sm"
+                        onclick="rejectRestock(${r.requestId})">
+                        Reject
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+/* Approves restock request */
+async function approveRestock(id) {
+    if (!confirm("Approve this restock request?")) return;
+    await fetch(`/api/admin/restock-requests/${id}/approve`, { method: "PATCH" });
+    loadRestockRequests();
+}
+
+/* Rejects restock request */
+async function rejectRestock(id) {
+    if (!confirm("Reject this restock request?")) return;
+    await fetch(`/api/admin/restock-requests/${id}/reject`, { method: "PATCH" });
+    loadRestockRequests();
+}
+</script>
+
+</body>
+</html>
